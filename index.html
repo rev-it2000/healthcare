@@ -8,8 +8,164 @@
     content="ARIA is an AI-powered Level 1 Clinical Triage system that reads patient medical history via their 14-digit ABHA ID and enforces a privacy firewall to protect sensitive health data."/>
   <meta name="theme-color" content="#040810" />
 
-  <!-- Fonts loaded via CSS @import -->
-  <link rel="stylesheet" href="style.css" />
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Orbitron:wght@700;900&display=swap');
+:root{--bg-void:#040810;--bg-deep:#070d1a;--bg-surface:#0d1628;--bg-card:rgba(13,22,40,0.85);--bg-glass:rgba(255,255,255,0.04);--bg-glass-hov:rgba(255,255,255,0.07);--cyan:#00d4ff;--cyan-dim:rgba(0,212,255,0.15);--cyan-glow:rgba(0,212,255,0.35);--green:#00ff88;--green-dim:rgba(0,255,136,0.12);--red:#ff3860;--red-dim:rgba(255,56,96,0.15);--amber:#ffb347;--amber-dim:rgba(255,179,71,0.15);--purple:#b48bff;--purple-dim:rgba(180,139,255,0.12);--text-primary:#e8f0fe;--text-secondary:#8aa0c4;--text-muted:#4a5e7a;--text-accent:#00d4ff;--border:rgba(0,212,255,0.12);--border-bright:rgba(0,212,255,0.35);--radius-sm:8px;--radius-md:14px;--radius-lg:20px;--radius-xl:28px;--shadow-glow:0 0 40px rgba(0,212,255,0.15);--shadow-card:0 8px 32px rgba(0,0,0,0.5),0 0 0 1px var(--border);--shadow-red:0 0 30px rgba(255,56,96,0.25);--transition:all 0.3s cubic-bezier(0.4,0,0.2,1);--transition-fast:all 0.15s ease}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg-void);color:var(--text-primary);min-height:100vh;overflow-x:hidden;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+body::after{content:'';position:fixed;top:-30%;left:50%;transform:translateX(-50%);width:80vw;height:60vh;background:radial-gradient(ellipse,rgba(0,212,255,0.08) 0%,transparent 70%);pointer-events:none;z-index:0}
+.view{position:relative;z-index:1;display:none;min-height:100vh}.view.active{display:flex}
+#view-landing{flex-direction:column;align-items:center;justify-content:center;padding:40px 20px}
+.logo-block{text-align:center;margin-bottom:48px;animation:fadeInDown 0.8s ease both}
+.logo-icon{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(0,212,255,0.05));border:1px solid var(--border-bright);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:var(--shadow-glow),inset 0 1px 0 rgba(255,255,255,0.1);position:relative}
+.logo-icon::after{content:'';position:absolute;inset:-4px;border-radius:28px;border:1px solid rgba(0,212,255,0.1)}
+.logo-icon svg{filter:drop-shadow(0 0 10px var(--cyan))}
+.logo-title{font-family:'Orbitron',sans-serif;font-size:clamp(2.2rem,5vw,3.2rem);font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#fff 0%,var(--cyan) 60%,#00ff88 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;margin-bottom:8px}
+.logo-subtitle{font-size:0.8rem;font-weight:500;letter-spacing:4px;color:var(--text-muted);text-transform:uppercase}
+.waveform-strip{width:320px;height:48px;margin:20px auto 0;overflow:hidden;position:relative}
+.waveform-strip svg{width:200%;height:100%;animation:waveScroll 3s linear infinite}
+@keyframes waveScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.landing-card{width:100%;max-width:520px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-xl);padding:40px;box-shadow:var(--shadow-card),var(--shadow-glow);backdrop-filter:blur(20px);animation:fadeInUp 0.8s 0.2s ease both}
+.card-header{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.status-dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s ease infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(0.8)}}
+.card-title-sm{font-size:0.75rem;letter-spacing:3px;color:var(--text-muted);text-transform:uppercase;font-weight:600}
+.form-group{margin-bottom:20px}
+.form-label{display:block;font-size:0.75rem;font-weight:600;letter-spacing:2px;color:var(--text-secondary);text-transform:uppercase;margin-bottom:8px}
+.form-input{width:100%;padding:14px 18px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:500;letter-spacing:2px;outline:none;transition:var(--transition)}
+.form-input::placeholder{color:var(--text-muted);font-family:'Inter',sans-serif;letter-spacing:0;font-size:0.875rem}
+.form-input:focus{border-color:var(--cyan);background:rgba(0,212,255,0.06);box-shadow:0 0 0 3px var(--cyan-dim)}
+.form-input.error{border-color:var(--red);box-shadow:0 0 0 3px var(--red-dim)}
+.form-hint{font-size:0.72rem;color:var(--text-muted);margin-top:6px}
+.divider{border:none;border-top:1px solid var(--border);margin:24px 0}
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,var(--cyan),#0066ff);border:none;border-radius:var(--radius-md);color:#040810;font-family:'Inter',sans-serif;font-size:0.9rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:var(--transition);position:relative;overflow:hidden}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent);opacity:0;transition:opacity 0.2s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,212,255,0.4)}
+.btn-primary:hover::after{opacity:1}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.demo-accordion{margin-top:20px;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+.demo-accordion summary{padding:12px 16px;cursor:pointer;font-size:0.78rem;color:var(--text-muted);letter-spacing:1px;user-select:none;list-style:none;display:flex;align-items:center;gap:8px;transition:color 0.2s,background 0.2s}
+.demo-accordion summary:hover{color:var(--cyan);background:var(--bg-glass)}
+.demo-accordion summary::before{content:'▶';font-size:0.6rem;transition:transform 0.2s}
+.demo-accordion[open] summary::before{transform:rotate(90deg)}
+.demo-ids-list{padding:0 8px 12px;display:flex;flex-direction:column;gap:4px}
+.demo-id-chip{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition-fast);border:1px solid transparent}
+.demo-id-chip:hover{background:var(--bg-glass-hov);border-color:var(--border)}
+.demo-id-code{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--cyan);flex:1}
+.demo-id-name{font-size:0.75rem;color:var(--text-secondary)}
+.demo-id-tag{font-size:0.6rem;padding:2px 7px;border-radius:99px;font-weight:700;letter-spacing:0.5px}
+.tag-redflg{background:var(--red-dim);color:var(--red);border:1px solid var(--red)}
+.tag-privacy{background:var(--purple-dim);color:var(--purple);border:1px solid var(--purple)}
+.tag-multi{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber)}
+.tag-substance{background:var(--green-dim);color:var(--green);border:1px solid var(--green)}
+.error-banner{display:none;margin-top:12px;padding:10px 14px;background:var(--red-dim);border:1px solid var(--red);border-radius:var(--radius-sm);color:var(--red);font-size:0.8rem;animation:fadeIn 0.3s ease}
+.error-banner.visible{display:block}
+#view-scanning{flex-direction:column;align-items:center;justify-content:center;gap:32px}
+.scan-ring{position:relative;width:140px;height:140px}
+.scan-ring::before,.scan-ring::after{content:'';position:absolute;inset:0;border-radius:50%}
+.scan-ring::before{border:2px solid var(--border)}
+.scan-ring::after{border:2px solid transparent;border-top-color:var(--cyan);border-right-color:var(--cyan);animation:spinRing 1s linear infinite}
+@keyframes spinRing{to{transform:rotate(360deg)}}
+.scan-ring-inner{position:absolute;inset:20px;border-radius:50%;border:1px solid var(--border);animation:spinRing 1.5s linear infinite reverse}
+.scan-ring-inner::after{content:'';position:absolute;inset:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--cyan);box-shadow:0 0 20px var(--cyan);animation:pulse 1s ease infinite}
+.scan-text{text-align:center}
+.scan-title{font-family:'Orbitron',sans-serif;font-size:1rem;letter-spacing:4px;color:var(--cyan);margin-bottom:8px}
+.scan-id-display{font-family:'JetBrains Mono',monospace;font-size:1.1rem;letter-spacing:4px;color:var(--text-secondary)}
+.scan-steps{display:flex;flex-direction:column;gap:8px;min-width:280px}
+.scan-step{display:flex;align-items:center;gap:12px;padding:8px 16px;border-radius:var(--radius-sm);font-size:0.78rem;color:var(--text-muted);transition:var(--transition)}
+.scan-step.done{color:var(--green);background:var(--green-dim)}
+.scan-step.active{color:var(--cyan);background:var(--cyan-dim)}
+.scan-step-dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
+.scan-step.active .scan-step-dot{animation:pulse 1s ease infinite}
+#view-chat{flex-direction:column;height:100vh;max-height:100vh}
+.chat-topbar{display:flex;align-items:center;gap:16px;padding:16px 24px;background:rgba(7,13,26,0.95);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);position:sticky;top:0;z-index:10;flex-shrink:0}
+.topbar-logo{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:900;letter-spacing:3px;background:linear-gradient(90deg,var(--cyan),#00ff88);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.topbar-sep{width:1px;height:24px;background:var(--border)}
+.patient-badge{display:flex;align-items:center;gap:10px;padding:6px 12px;background:var(--cyan-dim);border:1px solid var(--border-bright);border-radius:99px}
+.patient-badge-name{font-size:0.8rem;font-weight:600;color:var(--cyan)}
+.patient-badge-id{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted)}
+.topbar-spacer{flex:1}
+.privacy-shield{display:flex;align-items:center;gap:6px;font-size:0.7rem;color:var(--green);padding:4px 10px;background:var(--green-dim);border-radius:99px;border:1px solid rgba(0,255,136,0.25)}
+.chat-body{flex:1;overflow-y:auto;padding:24px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth}
+.chat-body::-webkit-scrollbar{width:4px}
+.chat-body::-webkit-scrollbar-track{background:transparent}
+.chat-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+.message{display:flex;gap:12px;max-width:760px;animation:msgIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both}
+@keyframes msgIn{from{opacity:0;transform:translateY(16px) scale(0.97)}to{opacity:1;transform:none}}
+.message.user{flex-direction:row-reverse;align-self:flex-end}.message.aria{align-self:flex-start}
+.msg-avatar{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0;margin-top:2px}
+.msg-avatar.aria-av{background:linear-gradient(135deg,rgba(0,212,255,0.3),rgba(0,212,255,0.1));border:1px solid var(--border-bright);color:var(--cyan);box-shadow:0 0 16px rgba(0,212,255,0.2)}
+.msg-avatar.user-av{background:linear-gradient(135deg,rgba(180,139,255,0.3),rgba(180,139,255,0.1));border:1px solid rgba(180,139,255,0.3);color:var(--purple)}
+.msg-bubble{padding:14px 18px;border-radius:var(--radius-md);font-size:0.9rem;line-height:1.65;max-width:100%}
+.message.aria .msg-bubble{background:var(--bg-glass);border:1px solid var(--border);color:var(--text-primary);border-bottom-left-radius:4px}
+.message.user .msg-bubble{background:linear-gradient(135deg,rgba(180,139,255,0.15),rgba(100,80,200,0.1));border:1px solid rgba(180,139,255,0.25);color:var(--text-primary);border-bottom-right-radius:4px}
+.typing-indicator{display:flex;align-items:center;gap:5px;padding:14px 18px}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:typingBounce 1.2s ease infinite}
+.typing-dot:nth-child(2){animation-delay:0.2s}.typing-dot:nth-child(3){animation-delay:0.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-6px);opacity:1}}
+.chat-footer{padding:16px 24px 24px;background:rgba(7,13,26,0.95);border-top:1px solid var(--border);backdrop-filter:blur(20px);flex-shrink:0}
+.chat-input-row{display:flex;gap:12px;max-width:760px;margin:0 auto}
+.chat-input{flex:1;padding:14px 18px;background:var(--bg-glass);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:'Inter',sans-serif;font-size:0.9rem;outline:none;resize:none;max-height:120px;transition:var(--transition);min-height:48px}
+.chat-input::placeholder{color:var(--text-muted)}
+.chat-input:focus{border-color:var(--cyan);background:rgba(0,212,255,0.05);box-shadow:0 0 0 3px var(--cyan-dim)}
+.btn-send{width:48px;height:48px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--cyan),#0066ff);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition);flex-shrink:0;align-self:flex-end}
+.btn-send:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,212,255,0.4)}
+.btn-send:active{transform:translateY(0)}
+.btn-send:disabled{opacity:0.4;cursor:not-allowed;transform:none}
+.btn-send svg{color:#040810}
+.btn-generate-report{display:none;width:100%;max-width:760px;margin:12px auto 0;padding:14px;background:linear-gradient(135deg,var(--green),#00aa55);border:none;border-radius:var(--radius-md);color:#040810;font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:var(--transition)}
+.btn-generate-report.visible{display:block}
+.btn-generate-report:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,255,136,0.3)}
+#view-report{flex-direction:column;align-items:center;padding:40px 20px 60px}
+.report-container{width:100%;max-width:780px}
+.report-header{text-align:center;margin-bottom:36px;animation:fadeInDown 0.6s ease both}
+.report-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:99px;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+.report-badge.critical{background:var(--red-dim);border:1px solid var(--red);color:var(--red)}
+.report-badge.stable{background:var(--green-dim);border:1px solid var(--green);color:var(--green)}
+.report-badge-dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 1s ease infinite}
+.report-title{font-family:'Orbitron',sans-serif;font-size:clamp(1.2rem,3vw,1.8rem);font-weight:900;letter-spacing:3px;color:#fff;margin-bottom:6px}
+.report-meta{font-size:0.75rem;color:var(--text-muted);letter-spacing:1px}
+.report-section{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-bottom:16px;backdrop-filter:blur(20px);animation:fadeInUp 0.5s ease both;box-shadow:var(--shadow-card)}
+.report-section:nth-child(1){animation-delay:0.1s}.report-section:nth-child(2){animation-delay:0.2s}.report-section:nth-child(3){animation-delay:0.3s}.report-section:nth-child(4){animation-delay:0.4s}
+.report-section.red-flags{border-color:rgba(255,56,96,0.4);background:rgba(255,56,96,0.05);box-shadow:var(--shadow-card),var(--shadow-red)}
+.section-label{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.section-num{width:24px;height:24px;border-radius:6px;background:var(--cyan-dim);border:1px solid var(--border-bright);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:var(--cyan);font-family:'JetBrains Mono',monospace}
+.report-section.red-flags .section-num{background:var(--red-dim);border-color:var(--red);color:var(--red)}
+.section-title{font-size:0.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text-secondary)}
+.report-section.red-flags .section-title{color:var(--red)}
+.section-content{font-size:0.9rem;color:var(--text-primary);line-height:1.7}
+.section-content strong{color:var(--cyan);font-weight:600}
+.section-content em{color:var(--text-secondary);font-style:italic}
+.status-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:99px;font-size:0.85rem;font-weight:700;letter-spacing:1px}
+.status-pill.critical{background:var(--red-dim);border:1px solid var(--red);color:var(--red)}
+.status-pill.stable{background:var(--green-dim);border:1px solid var(--green);color:var(--green)}
+.allergy-chip{display:inline-block;padding:3px 10px;background:var(--red-dim);border:1px solid var(--red);border-radius:99px;color:var(--red);font-size:0.75rem;font-weight:600;margin:2px 3px}
+.section-content ul{list-style:none;padding:0}
+.section-content ul li{padding:6px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start}
+.section-content ul li:last-child{border-bottom:none}
+.section-content ul li::before{content:'›';color:var(--cyan);font-weight:700;flex-shrink:0}
+.redflag-item{padding:12px 16px;background:rgba(255,56,96,0.08);border:1px solid rgba(255,56,96,0.25);border-radius:var(--radius-sm);margin-bottom:10px;font-size:0.875rem;display:flex;gap:12px;align-items:flex-start}
+.redflag-icon{color:var(--red);font-size:1rem;flex-shrink:0}
+.report-actions{display:flex;gap:12px;margin-top:24px;animation:fadeInUp 0.5s 0.5s ease both}
+.btn-secondary{flex:1;padding:14px;background:var(--bg-glass);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-primary);font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;transition:var(--transition)}
+.btn-secondary:hover{background:var(--bg-glass-hov);border-color:var(--cyan);color:var(--cyan)}
+.privacy-audit{margin-top:20px;padding:20px 24px;background:rgba(180,139,255,0.05);border:1px solid rgba(180,139,255,0.2);border-radius:var(--radius-lg);animation:fadeInUp 0.5s 0.55s ease both}
+.audit-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;font-size:0.7rem;letter-spacing:2px;color:var(--purple);font-weight:700;text-transform:uppercase}
+.audit-item{display:flex;align-items:flex-start;gap:8px;font-size:0.78rem;color:var(--text-muted);padding:4px 0}
+.audit-item .audit-dot{color:var(--green);flex-shrink:0}
+.audit-item .audit-red{color:var(--red)}
+#raw-report-block{display:none}
+.report-raw-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--text-secondary);line-height:1.8;white-space:pre-wrap;display:none}
+.report-raw-card.visible{display:block}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.hidden{display:none!important}
+@media(max-width:640px){.landing-card{padding:24px 20px}.chat-body{padding:16px}.chat-footer{padding:12px 16px 16px}.report-section{padding:20px}.report-actions{flex-direction:column}}
+  </style>
 </head>
 
 <body>
@@ -287,7 +443,18 @@
   <!-- ======================================================
        SCRIPTS
        ====================================================== -->
-  <script src="patients.js"></script>
+  <script>
+// Simulated Patient Database
+const PATIENT_DATABASE={"12345678901234":{id:"12345678901234",name:"Rahul Sharma",age:47,dob:"1977-03-14",sex:"Male",blood_type:"B+",weight_kg:82,height_cm:172,contact:"+91-9876543210",emergency_contact:"Sunita Sharma (Wife) — +91-9988776655",allergies:["Penicillin","Aspirin (causes GI bleed)"],current_medications:["Atenolol 50mg (once daily)","Atorvastatin 20mg (nightly)","Metformin 500mg (twice daily)"],chronic_conditions:["Type 2 Diabetes (diagnosed 2018)","Hypertension (diagnosed 2016)"],medical_history:[{year:2019,event:"Mild Myocardial Infarction (heart attack) — STEMI, treated with drug-eluting stent (LAD artery)",sensitive:false},{year:2020,event:"Coronary Artery Disease — confirmed on angiography, managed medically",sensitive:false},{year:2021,event:"Depression and anxiety following cardiac event — treated with CBT and Sertraline for 18 months, now resolved",sensitive:true,reason:"psychiatric"}],last_visit:"2025-11-20",primary_physician:"Dr. Anjali Nair, Cardiologist",scenario_tag:"cardiac_redflg"},"98765432109876":{id:"98765432109876",name:"Priya Mehta",age:31,dob:"1993-07-22",sex:"Female",blood_type:"O+",weight_kg:58,height_cm:162,contact:"+91-9823456789",emergency_contact:"Rajan Mehta (Husband) — +91-9911223344",allergies:["Latex","Codeine (causes nausea/vomiting)"],current_medications:["Levothyroxine 50mcg (once daily)","Folic acid 5mg (once daily)"],chronic_conditions:["Hypothyroidism (diagnosed 2020)"],medical_history:[{year:2021,event:"IVF Cycle 1 — unsuccessful, no complications",sensitive:true,reason:"reproductive"},{year:2022,event:"IVF Cycle 2 — successful, delivered healthy baby (2023)",sensitive:true,reason:"reproductive"},{year:2022,event:"Antenatal anxiety disorder during pregnancy — brief counselling, resolved post-partum",sensitive:true,reason:"psychiatric"},{year:2024,event:"Wrist sprain (left) — conservatively managed",sensitive:false}],last_visit:"2025-08-10",primary_physician:"Dr. Kavita Iyer, Endocrinologist",scenario_tag:"privacy_suppressed"},"11223344556677":{id:"11223344556677",name:"Arun Kumar",age:29,dob:"1995-12-05",sex:"Male",blood_type:"A-",weight_kg:71,height_cm:178,contact:"+91-9765432188",emergency_contact:"Leela Kumar (Mother) — +91-9944332211",allergies:["NSAIDs (ibuprofen — causes GI haemorrhage)","Tramadol (contraindicated — prior opioid sensitivity)"],current_medications:["Naltrexone 50mg (once daily — for relapse prevention)","Pantoprazole 40mg (once daily)"],chronic_conditions:["Opioid Use Disorder — sustained full remission (3 years)","Gastritis"],medical_history:[{year:2020,event:"Opioid Use Disorder — inpatient detox over 21 days, followed by MAT (Buprenorphine/Naloxone for 12 months)",sensitive:true,reason:"substance_abuse"},{year:2021,event:"Alcohol Use Disorder comorbidity — 6 months outpatient group therapy, in remission",sensitive:true,reason:"substance_abuse"},{year:2022,event:"Severe gastritis secondary to NSAID overuse during active addiction phase",sensitive:false},{year:2023,event:"Naltrexone initiated for relapse prevention — ongoing compliance confirmed",sensitive:false}],last_visit:"2026-01-08",primary_physician:"Dr. Suresh Pillai, Internal Medicine",scenario_tag:"substance_redflg"},"55667788990011":{id:"55667788990011",name:"Meera Nair",age:63,dob:"1961-09-30",sex:"Female",blood_type:"AB+",weight_kg:68,height_cm:158,contact:"+91-9812345678",emergency_contact:"Vijay Nair (Son) — +91-9900112233",allergies:["Sulfa drugs","Contrast dye (iodine-based — prior anaphylaxis)"],current_medications:["Warfarin 5mg (daily — INR target 2.0–3.0)","Ramipril 5mg (once daily)","Furosemide 40mg (once daily)","Digoxin 0.125mg (once daily)"],chronic_conditions:["Atrial Fibrillation (AF)","Congestive Heart Failure (CHF) — NYHA Class II","Hypertension"],medical_history:[{year:2018,event:"Ischaemic Stroke — mild, full recovery, anticoagulation initiated",sensitive:false},{year:2020,event:"Elective cardioversion for AF — successful rhythm restoration, reverted to AF within 6 months",sensitive:false},{year:2022,event:"Breast cancer screening — BRCA1 positive, underwent bilateral prophylactic mastectomy",sensitive:true,reason:"reproductive"},{year:2023,event:"Post-surgical depression following mastectomy — 9 months SSRI therapy (Escitalopram), now off medication, stable",sensitive:true,reason:"psychiatric"},{year:2024,event:"CHF exacerbation — hospitalised 5 days, diuretics adjusted",sensitive:false}],last_visit:"2026-03-22",primary_physician:"Dr. Ramesh Gupta, Cardiologist",scenario_tag:"multi_redflg"}};
+function getPatientById(id){return PATIENT_DATABASE[id.replace(/\s/g,'').trim()]||null;}
+function getDemoIds(){return Object.keys(PATIENT_DATABASE).map(id=>({id,name:PATIENT_DATABASE[id].name,age:PATIENT_DATABASE[id].age,scenario:PATIENT_DATABASE[id].scenario_tag}));}
+  </script>
+  <script>
+// app.js inlined
+const OPENROUTER_MODEL='nvidia/nemotron-3-ultra-550b-a55b:free';
+function getApiKey(){return sessionStorage.getItem('aria_or_key')||'';}
+function setApiKey(k){sessionStorage.setItem('aria_or_key',k);}
+  </script>
   <script src="app.js"></script>
 
 </body>
