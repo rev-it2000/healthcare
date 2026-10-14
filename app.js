@@ -10,6 +10,18 @@ const OPENROUTER_MODEL = 'nvidia/nemotron-3-ultra-550b-a55b:free';
 function getApiKey() { return sessionStorage.getItem('aria_or_key') || ''; }
 function setApiKey(k) { sessionStorage.setItem('aria_or_key', k); }
 
+// ── Efficiency: AbortController for in-flight requests ────────
+let _activeController = null;
+function abortPendingRequest() {
+  if (_activeController) { _activeController.abort(); _activeController = null; }
+}
+
+// ── Efficiency: Debounce utility ──────────────────────────────
+function debounce(fn, ms) {
+  let timer;
+  return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms); };
+}
+
 // ── State ──────────────────────────────────────────────────────
 const STATE = {
   patient: null,
@@ -187,8 +199,12 @@ async function callGemini(systemPrompt, history) {
     }))
   ];
 
+  abortPendingRequest();
+  _activeController = new AbortController();
+
   const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method:  'POST',
+    signal:  _activeController.signal,
     headers: {
       'Content-Type':  'application/json',
       'Authorization': `Bearer ${apiKey}`,
@@ -202,6 +218,7 @@ async function callGemini(systemPrompt, history) {
     })
   });
 
+  _activeController = null;
   const data = await res.json();
   if (!res.ok) throw new Error(data.error?.message || `API error ${res.status}`);
 
