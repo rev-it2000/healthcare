@@ -1,0 +1,9 @@
+# Dependencies
+node_modules/
+
+# Environment — NEVER commit your real key
+.env
+
+# OS junk
+.DS_Store
+Thumbs.db

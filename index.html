@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ARIA — AI Clinical Triage System | ABDM Certified</title>
+  <meta name="description"
+    content="ARIA is an AI-powered Level 1 Clinical Triage system that reads patient medical history via their 14-digit ABHA ID and enforces a privacy firewall to protect sensitive health data."/>
+  <meta name="theme-color" content="#040810" />
+
+  <!-- Fonts loaded via CSS @import -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ======================================================
+       VIEW 1 — LANDING / LOGIN
+       ====================================================== -->
+  <div id="view-landing" class="view active">
+
+    <!-- Hero Logo -->
+    <div class="logo-block">
+      <div class="logo-icon">
+        <!-- Medical cross + circuit SVG -->
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <rect x="16" y="6" width="8" height="28" rx="2" fill="#00d4ff" opacity="0.9"/>
+          <rect x="6" y="16" width="28" height="8" rx="2" fill="#00d4ff" opacity="0.9"/>
+          <circle cx="6"  cy="6"  r="2" fill="#00ff88" opacity="0.6"/>
+          <circle cx="34" cy="6"  r="2" fill="#00ff88" opacity="0.6"/>
+          <circle cx="6"  cy="34" r="2" fill="#00ff88" opacity="0.6"/>
+          <circle cx="34" cy="34" r="2" fill="#00ff88" opacity="0.6"/>
+          <line x1="6" y1="6"  x2="14" y2="14" stroke="#00ff88" stroke-width="1" opacity="0.4"/>
+          <line x1="34" y1="6" x2="26" y2="14" stroke="#00ff88" stroke-width="1" opacity="0.4"/>
+        </svg>
+      </div>
+
+      <h1 class="logo-title">ARIA</h1>
+      <p class="logo-subtitle">Autonomous Rapid Intake Agent · Level 1 Clinical Triage AI</p>
+
+      <!-- Animated ECG Waveform -->
+      <div class="waveform-strip" aria-hidden="true">
+        <svg viewBox="0 0 640 48" preserveAspectRatio="none">
+          <polyline
+            points="0,24 40,24 50,8 60,40 70,6 80,42 90,24 130,24
+                    170,24 180,8 190,40 200,6 210,42 220,24 260,24
+                    300,24 310,8 320,40 330,6 340,42 350,24 390,24
+                    430,24 440,8 450,40 460,6 470,42 480,24 520,24
+                    560,24 570,8 580,40 590,6 600,42 610,24 640,24"
+            fill="none"
+            stroke="#00d4ff"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            opacity="0.6"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Main Card -->
+    <div class="landing-card" role="main">
+
+      <div class="card-header">
+        <div class="status-dot" aria-hidden="true"></div>
+        <span class="card-title-sm">Secure Patient Terminal · ABDM Certified</span>
+      </div>
+
+      <form id="start-form" novalidate>
+
+
+        <!-- Medical ID -->
+        <div class="form-group">
+          <label class="form-label" for="med-id-input">14-Digit ABHA Medical ID</label>
+          <input
+            type="text"
+            id="med-id-input"
+            class="form-input"
+            placeholder="e.g. 1234567890 1234"
+            inputmode="numeric"
+            maxlength="14"
+            autocomplete="off"
+            required
+          />
+          <p class="form-hint">Enter the patient's 14-digit Ayushman Bharat Health Account ID.</p>
+        </div>
+
+        <!-- Error Banner -->
+        <div id="error-banner" class="error-banner" role="alert" aria-live="assertive"></div>
+
+        <!-- Submit -->
+        <button type="submit" id="btn-start" class="btn-primary">
+          🔒 &nbsp; Retrieve Patient File &amp; Begin Triage
+        </button>
+
+      </form>
+
+      <!-- Demo IDs -->
+      <details class="demo-accordion" id="demo-accordion">
+        <summary>Use a demo patient (for testing)</summary>
+        <div class="demo-ids-list" id="demo-ids-list"></div>
+      </details>
+
+    </div>
+
+    <!-- Footer note -->
+    <p style="margin-top:24px;font-size:0.7rem;color:var(--text-muted);text-align:center;max-width:480px;line-height:1.6">
+      ⚠ This is a clinical simulation for demonstration purposes only. No real patient data is processed.
+      All records are fictional. Not for medical use.
+    </p>
+  </div>
+
+
+  <!-- ======================================================
+       VIEW 2 — SCANNING ANIMATION
+       ====================================================== -->
+  <div id="view-scanning" class="view" aria-live="polite" aria-label="Scanning patient records">
+
+    <div class="scan-ring" aria-hidden="true">
+      <div class="scan-ring-inner"></div>
+    </div>
+
+    <div class="scan-text">
+      <p class="scan-title">RETRIEVING PATIENT FILE</p>
+      <p class="scan-id-display" id="scan-id-display">0000 0000 0000 00</p>
+    </div>
+
+    <div class="scan-steps" role="status">
+      <div class="scan-step" id="scan-step-1">
+        <div class="scan-step-dot"></div>
+        <span>Authenticating terminal…</span>
+      </div>
+      <div class="scan-step" id="scan-step-2">
+        <div class="scan-step-dot"></div>
+        <span>Querying ABDM registry…</span>
+      </div>
+      <div class="scan-step" id="scan-step-3">
+        <div class="scan-step-dot"></div>
+        <span>Decrypting health records…</span>
+      </div>
+      <div class="scan-step" id="scan-step-4">
+        <div class="scan-step-dot"></div>
+        <span>Activating Privacy Firewall…</span>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ======================================================
+       VIEW 3 — TRIAGE CHAT
+       ====================================================== -->
+  <div id="view-chat" class="view" role="main">
+
+    <!-- Topbar -->
+    <header class="chat-topbar" role="banner">
+      <span class="topbar-logo">ARIA</span>
+      <div class="topbar-sep" aria-hidden="true"></div>
+      <div class="patient-badge">
+        <span class="patient-badge-name" id="patient-name-badge">—</span>
+        <span class="patient-badge-id"   id="patient-id-badge">—</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="privacy-shield" title="Privacy Firewall is active">
+        🔒 Privacy Firewall Active
+      </div>
+    </header>
+
+    <!-- Messages -->
+    <main id="chat-messages" class="chat-body" aria-label="Triage conversation" aria-live="polite">
+      <!-- Messages injected by JS -->
+    </main>
+
+    <!-- Input Footer -->
+    <footer class="chat-footer">
+      <div class="chat-input-row">
+        <textarea
+          id="chat-input"
+          class="chat-input"
+          placeholder="Describe your symptoms…  (Press Enter to send)"
+          rows="1"
+          aria-label="Your response to ARIA"
+          autocomplete="off"
+        ></textarea>
+        <button id="btn-send" class="btn-send" aria-label="Send message">
+          <svg width="20" height="20" fill="none" stroke="#040810" viewBox="0 0 24 24" stroke-width="2.5">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <button id="btn-generate-report" class="btn-generate-report" aria-label="Generate Doctor Handoff Report">
+        📋 &nbsp; Generate Doctor Handoff Report
+      </button>
+    </footer>
+
+  </div>
+
+
+  <!-- ======================================================
+       VIEW 4 — DOCTOR HANDOFF REPORT
+       ====================================================== -->
+  <div id="view-report" class="view" role="main">
+    <div class="report-container">
+
+      <!-- Report Header -->
+      <header class="report-header">
+        <div id="report-status-badge" class="report-badge stable">
+          <span class="badge-label report-badge-dot">● STABLE</span>
+        </div>
+        <h1 class="report-title">DOCTOR HANDOFF REPORT</h1>
+        <p class="report-meta" id="report-patient-name">Patient Name</p>
+        <p class="report-meta" id="report-timestamp">—</p>
+      </header>
+
+      <!-- Section 1: Patient Status -->
+      <section class="report-section" aria-label="Patient Status">
+        <div class="section-label">
+          <div class="section-num">01</div>
+          <span class="section-title">Patient Status</span>
+        </div>
+        <div class="section-content" id="section-status-content">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+      <!-- Section 2: Vitals & Allergies -->
+      <section class="report-section" aria-label="Vitals and Allergies">
+        <div class="section-label">
+          <div class="section-num">02</div>
+          <span class="section-title">Vitals &amp; Allergies</span>
+        </div>
+        <div class="section-content" id="section-vitals-content">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+      <!-- Section 3: Presenting Complaint -->
+      <section class="report-section" aria-label="Presenting Complaint">
+        <div class="section-label">
+          <div class="section-num">03</div>
+          <span class="section-title">Presenting Complaint</span>
+        </div>
+        <div class="section-content" id="section-complaint-content">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+      <!-- Section 4: Red Flags -->
+      <section class="report-section red-flags" aria-label="Red Flags">
+        <div class="section-label">
+          <div class="section-num">04</div>
+          <span class="section-title">⚠ Red Flags</span>
+        </div>
+        <div class="section-content" id="section-redflags-content">
+          <!-- Rendered by JS -->
+        </div>
+      </section>
+
+      <!-- Action Buttons -->
+      <div class="report-actions">
+        <button id="btn-new-patient" class="btn-secondary">🔄 New Patient</button>
+        <button id="btn-print"       class="btn-secondary">🖨 Print Report</button>
+        <button id="btn-toggle-raw"  class="btn-secondary">📋 View Raw Markdown</button>
+      </div>
+
+      <!-- Privacy Audit Trail -->
+      <div class="privacy-audit" role="complementary" aria-label="Privacy Audit Trail">
+        <div class="audit-header">
+          <span>🔒</span>
+          <span>Privacy Firewall Audit Trail</span>
+        </div>
+        <div id="audit-list">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Raw Report Block -->
+      <div id="raw-report-card" class="report-raw-card" aria-label="Raw Markdown Report">
+        <pre id="raw-report-text"></pre>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ======================================================
+       SCRIPTS
+       ====================================================== -->
+  <script src="patients.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
