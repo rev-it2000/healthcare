@@ -4,27 +4,36 @@
   "description": "ARIA — AI-powered Level 1 Clinical Triage Agent with Privacy Firewall (ABDM/DPDPA 2023 compliant)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js",
-    "test": "jest --coverage --verbose",
-    "test:watch": "jest --watch"
+    "start":      "node server.js",
+    "dev":        "node server.js",
+    "test":       "jest --coverage --verbose",
+    "test:watch": "jest --watch",
+    "test:ci":    "jest --coverage --ci --forceExit"
   },
-  "keywords": ["healthcare", "triage", "AI", "privacy", "ABDM", "ABHA"],
+  "keywords": ["healthcare", "triage", "AI", "privacy", "ABDM", "ABHA", "DPDPA"],
   "author": "ARIA Medical AI Team",
   "license": "MIT",
   "dependencies": {
-    "dotenv": "^16.0.3",
-    "express": "^4.18.2"
+    "dotenv":   "^16.0.3",
+    "express":  "^4.18.2"
   },
   "devDependencies": {
     "jest": "^29.7.0"
   },
   "jest": {
     "testEnvironment": "node",
-    "testMatch": ["**/tests/**/*.test.js"],
+    "testMatch":       ["**/tests/**/*.test.js"],
     "collectCoverageFrom": [
       "app-module.js",
       "patients-module.js"
-    ]
+    ],
+    "coverageThresholds": {
+      "global": {
+        "branches":  60,
+        "functions": 80,
+        "lines":     80,
+        "statements": 80
+      }
+    }
   }
 }

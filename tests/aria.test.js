@@ -263,10 +263,11 @@ Patient reports chest pain radiating to left arm for 2 hours.
 
   test('parses all four mandatory sections', () => {
     const s = parseReportSections(sampleReport);
-    expect(s).toHaveProperty('1. Patient Status');
-    expect(s).toHaveProperty('2. Vitals & Allergies');
-    expect(s).toHaveProperty('3. Presenting Complaint');
-    expect(s).toHaveProperty('4. Red Flags');
+    // Use direct property access — toHaveProperty treats dots as path separators
+    expect(s['1. Patient Status']).toBeDefined();
+    expect(s['2. Vitals & Allergies']).toBeDefined();
+    expect(s['3. Presenting Complaint']).toBeDefined();
+    expect(s['4. Red Flags']).toBeDefined();
   });
 
   test('Patient Status section contains STABLE keyword', () => {
@@ -531,8 +532,8 @@ describe('9. Input Validation — Boundary Conditions', () => {
     expect(getPatientById('1234-5678-9012-34')).toBeNull();
   });
 
-  test('formatMedId output length is exactly 16 chars (14 digits + 3 spaces)', () => {
-    expect(formatMedId('12345678901234').length).toBe(16);
+  test('formatMedId output length is exactly 17 chars (14 digits + 3 spaces)', () => {
+    expect(formatMedId('12345678901234').length).toBe(17);
   });
 
   test('escapeHtml handles very long strings', () => {

@@ -58,14 +58,33 @@ const PATIENT_DATABASE = {
   }
 };
 
+// ── Memoization cache (efficiency: avoids repeated lookups) ──────────────────
+const _patientCache = new Map();
+
+/**
+ * Look up a patient by their 14-digit ABHA Medical ID.
+ * Results are memoized in-memory for the session lifetime.
+ * @param {string} id - Raw or space-separated 14-digit ABHA ID
+ * @returns {object|null} Patient record or null if not found
+ */
 function getPatientById(id) {
-  return PATIENT_DATABASE[id.replace(/\s/g, '').trim()] || null;
+  const cleanId = id.replace(/\s/g, '').trim();
+  if (_patientCache.has(cleanId)) return _patientCache.get(cleanId);
+  const patient = PATIENT_DATABASE[cleanId] || null;
+  if (patient) _patientCache.set(cleanId, patient);
+  return patient;
 }
+
+/**
+ * Returns a list of demo patient IDs with display metadata.
+ * @returns {Array<{id: string, name: string, age: number, scenario: string}>}
+ */
 function getDemoIds() {
   return Object.keys(PATIENT_DATABASE).map(id => ({
-    id, name: PATIENT_DATABASE[id].name,
-    age: PATIENT_DATABASE[id].age,
-    scenario: PATIENT_DATABASE[id].scenario_tag
+    id,
+    name:     PATIENT_DATABASE[id].name,
+    age:      PATIENT_DATABASE[id].age,
+    scenario: PATIENT_DATABASE[id].scenario_tag,
   }));
 }
 
