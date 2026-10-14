@@ -10,13 +10,24 @@ function escapeHtml(str) {
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+/**
+ * Parses a Doctor Handoff Report markdown string into a sections object.
+ * Uses split-on-### for reliable cross-platform parsing.
+ * @param {string} raw - Raw markdown report string
+ * @returns {Object} Map of section titles to body text
+ */
 function parseReportSections(raw) {
   const sections = {};
-  const sectionRegex = /###\s+(.+?)\n([\s\S]*?)(?=###|$)/g;
-  let match;
-  while ((match = sectionRegex.exec(raw)) !== null) {
-    sections[match[1].trim()] = match[2].trim();
-  }
+  if (!raw || !raw.trim()) return sections;
+  // Split on ### headers — works cross-platform (CRLF/LF)
+  const parts = raw.split(/###\s+/);
+  parts.slice(1).forEach(part => {
+    const newlineIdx = part.search(/[\r\n]/);
+    if (newlineIdx === -1) return;
+    const key  = part.slice(0, newlineIdx).trim();
+    const body = part.slice(newlineIdx).trim();
+    if (key) sections[key] = body;
+  });
   return sections;
 }
 

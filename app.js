@@ -1,44 +1,65 @@
 /* =============================================================
    ARIA — Level 1 Clinical Triage AI
    System Prompt Factory + Chat Engine + UI Controller
+   @version 1.0.0
+   @license MIT
    ============================================================= */
 
 // ── OpenRouter Config ─────────────────────────────────────────
-// Key is stored in sessionStorage — never committed to source control.
+/** Model slug on OpenRouter. Change to any compatible free model. */
 const OPENROUTER_MODEL = 'nvidia/nemotron-3-ultra-550b-a55b:free';
 
+/** @returns {string} API key from sessionStorage or empty string */
 function getApiKey() { return sessionStorage.getItem('aria_or_key') || ''; }
+
+/** @param {string} k - OpenRouter API key to persist for this session */
 function setApiKey(k) { sessionStorage.setItem('aria_or_key', k); }
 
 // ── Efficiency: AbortController for in-flight requests ────────
 let _activeController = null;
+
+/** Cancels any in-flight OpenRouter request to prevent duplicate calls */
 function abortPendingRequest() {
   if (_activeController) { _activeController.abort(); _activeController = null; }
 }
 
-// ── Efficiency: Debounce utility ──────────────────────────────
+/**
+ * Creates a debounced version of a function.
+ * @param {Function} fn - Function to debounce
+ * @param {number}   ms - Delay in milliseconds
+ * @returns {Function} Debounced function
+ */
 function debounce(fn, ms) {
   let timer;
   return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms); };
 }
 
-// ── State ──────────────────────────────────────────────────────
+// ── Application State ─────────────────────────────────────────
+/** @type {{ patient: object|null, conversationHistory: Array, questionCount: number, interviewComplete: boolean, reportGenerated: boolean }} */
 const STATE = {
-  patient: null,
+  patient:             null,
   conversationHistory: [],
-  questionCount: 0,
-  interviewComplete: false,
-  reportGenerated: false,
+  questionCount:       0,
+  interviewComplete:   false,
+  reportGenerated:     false,
 };
 
-// ── DOM References ─────────────────────────────────────────────
+/** @param {string} id - Element ID @returns {HTMLElement} */
 const $ = id => document.getElementById(id);
 
-// ── Views ──────────────────────────────────────────────────────
+/**
+ * Shows a named view and hides all others.
+ * Manages focus for accessibility — moves focus to the first heading.
+ * @param {string} id - View element ID to show
+ */
 function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  $(id).classList.add('active');
+  const view = $(id);
+  view.classList.add('active');
   window.scrollTo(0, 0);
+  // Accessibility: move focus to the newly visible section
+  const focusTarget = view.querySelector('h1, h2, [tabindex="0"], button, input, textarea');
+  if (focusTarget) setTimeout(() => focusTarget.focus({ preventScroll: true }), 100);
 }
 
 // =========================================================
