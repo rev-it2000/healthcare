@@ -1,6 +1,7 @@
 /**
  * ARIA — Clinical Triage AI Backend
  * Serves static files. API calls are made client-side from the browser.
+ * Compatible with Vercel serverless deployment.
  */
 require('dotenv').config();
 const express = require('express');
@@ -22,9 +23,15 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`\n  ╔══════════════════════════════════════════╗`);
-  console.log(`  ║   ARIA Clinical Triage — Server Ready   ║`);
-  console.log(`  ║   http://localhost:${PORT}                  ║`);
-  console.log(`  ╚══════════════════════════════════════════╝\n`);
-});
+// Local dev server
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`\n  ╔══════════════════════════════════════════╗`);
+    console.log(`  ║   ARIA Clinical Triage — Server Ready   ║`);
+    console.log(`  ║   http://localhost:${PORT}                  ║`);
+    console.log(`  ╚══════════════════════════════════════════╝\n`);
+  });
+}
+
+// Export for Vercel
+module.exports = app;
