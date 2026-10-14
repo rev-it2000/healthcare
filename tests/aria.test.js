@@ -91,8 +91,17 @@ describe('formatMedId()', () => {
     expect(formatMedId('12345678901234')).toBe('1234 5678 9012 34');
   });
 
-  test('handles already-spaced input', () => {
-    expect(formatMedId('12345678901234')).toMatch(/^\d{4} \d{4} \d{4} \d{2}$/);
+  test('output matches expected pattern', () => {
+    const result = formatMedId('12345678901234');
+    expect(result).toMatch(/^\d{4} \d{4} \d{4} \d{2}$/);
+  });
+
+  test('formats all 4 demo patient IDs correctly', () => {
+    const ids = ['12345678901234', '98765432109876', '11223344556677', '55667788990011'];
+    ids.forEach(id => {
+      const formatted = formatMedId(id);
+      expect(formatted).toMatch(/^\d{4} \d{4} \d{4} \d{2}$/);
+    });
   });
 });
 
